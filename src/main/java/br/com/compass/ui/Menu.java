@@ -18,8 +18,10 @@ public class Menu {
     static Scanner scanner = new Scanner(System.in);
 
     public static void run() {
+
         mainMenu(scanner);
     }
+
 
     private static void accountOpening() {
 
@@ -48,7 +50,7 @@ public class Menu {
         customerService.createCustomer(customer, account);
     }
 
-    private static BankAccount chooseAccountType() {
+    private static BankAccount chooseAccountType(){
 
         System.out.println("Account type");
         System.out.println("Chose an option");
@@ -96,7 +98,11 @@ public class Menu {
 
             switch (option) {
                 case 1:
-                    bankMenu(scanner);
+                    if (login()) {
+                        bankMenu(scanner);
+                    } else {
+                        continue;
+                    }
                     return;
                 case 2:
                     accountOpening();
@@ -112,6 +118,21 @@ public class Menu {
         }
     }
 
+    private static boolean login() {
+        System.out.print("Digite seu cpf: ");
+        String inputCpf = scanner.nextLine();
+        System.out.print("Digite sua senha: ");
+        String inputPassword = scanner.nextLine();
+
+        try {
+            Customer loggedCustomer = customerService.login(inputCpf, inputPassword);
+            System.out.println("Welcome, " + loggedCustomer.getName() + "!");
+            return true;
+        } catch (IllegalArgumentException e) {
+            System.out.println("Login failed: " + e.getMessage());
+        }
+        return false;
+    }
 
     private static void bankMenu(Scanner scanner) {
         boolean running = true;
