@@ -6,6 +6,7 @@ import br.com.compass.model.enums.AccountType;
 import br.com.compass.service.AccountService;
 import br.com.compass.service.CustomerService;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
@@ -128,24 +129,28 @@ public class Menu {
             System.out.println("=============================");
             System.out.print("Choose an option: ");
 
-            int option = Integer.parseInt(scanner.nextLine());
+            try {
+                int option = Integer.parseInt(scanner.nextLine());
 
-            switch (option) {
-                case 1:
-                    if (login(scanner)) {
-                        bankMenu(scanner);
-                    } else {
-                        continue;
-                    }
-                    return;
-                case 2:
-                    accountOpening(scanner);
-                    break;
-                case 0:
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Invalid option! Please try again.");
+                switch (option) {
+                    case 1:
+                        if (login(scanner)) {
+                            bankMenu(scanner);
+                        } else {
+                            continue;
+                        }
+                        return;
+                    case 2:
+                        accountOpening(scanner);
+                        break;
+                    case 0:
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Invalid option! Please try again.");
+                }
+            } catch (InputMismatchException | NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a number.");
             }
         }
     }
