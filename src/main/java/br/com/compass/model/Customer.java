@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,10 +58,10 @@ public class Customer {
         this.accounts.add(account);
     }
 
-    public Customer(String name, LocalDate birthDate, String cpf, String password, String phoneNumber) {
+    public Customer(String name, String birthDate, String cpf, String password, String phoneNumber) {
         this.id = null;
         this.name = name;
-        this.birthDate = birthDate;
+        this.birthDate = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         this.cpf = cpf;
         this.password = password;
         this.phoneNumber = phoneNumber;
