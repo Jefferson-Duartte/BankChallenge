@@ -5,7 +5,6 @@ import br.com.compass.model.Customer;
 import br.com.compass.model.enums.AccountType;
 import br.com.compass.service.AccountService;
 import br.com.compass.service.CustomerService;
-import br.com.compass.util.JpaUtil;
 
 import java.util.Scanner;
 
@@ -15,52 +14,88 @@ public class Menu {
 
     private static AccountService accountService = new AccountService();
 
-    static Scanner scanner = new Scanner(System.in);
+    static Scanner scanner;
 
     public static void run() {
+        scanner = new Scanner(System.in);
+        try {
+            mainMenu(scanner);
 
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
+        }
+    }
+
+
+    private static void accountOpening(Scanner scanner) {
+
+        boolean confirmed = false;
+        Customer customer;
+        BankAccount account;
+
+        while (!confirmed) {
+
+            System.out.println("Please, fill in the fields below");
+
+            System.out.println();
+
+            System.out.print("Full Name: ");
+            String fullName = scanner.nextLine();
+
+            System.out.print("Birth date(dd/MM/yyyy): ");
+            String birthDate = scanner.nextLine();
+
+            System.out.print("CPF: ");
+            String cpf = scanner.nextLine();
+
+            System.out.print("Phone Number: ");
+            String phoneNumber = scanner.nextLine();
+
+            System.out.print("Password: ");
+            String password = scanner.nextLine();
+
+            account = chooseAccountType(scanner);
+            customer = new Customer(fullName, birthDate, cpf, password, phoneNumber);
+
+            if (confirmedOperation(scanner)) {
+                customerService.createCustomer(customer, account);
+                System.out.println("\nAccount created successfully!");
+                confirmed = true;
+            } else {
+                System.out.println("\nLet's edit the details.\n");
+            }
+        }
         mainMenu(scanner);
     }
 
+    private static boolean confirmedOperation(Scanner scanner) {
+        while (true) {
+            System.out.print("Are the details correct? (yes/no): ");
+            String confirmed = scanner.nextLine().trim().toLowerCase();
 
-    private static void accountOpening() {
-
-        System.out.println("Please, fill in the fields below");
-
-        System.out.println();
-
-        System.out.print("Full Name: ");
-        String fullName = scanner.nextLine();
-
-        System.out.print("Birth date(dd/MM/yyyy): ");
-        String birthDate = scanner.nextLine();
-
-        System.out.print("CPF: ");
-        String cpf = scanner.nextLine();
-
-        System.out.print("Phone Number: ");
-        String phoneNumber = scanner.nextLine();
-
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
-
-        BankAccount account = chooseAccountType();
-
-        Customer customer = new Customer(fullName, birthDate, cpf, password, phoneNumber);
-        customerService.createCustomer(customer, account);
+            if (confirmed.equals("yes") || confirmed.equals("y")) {
+                return true;
+            } else if (confirmed.equals("no") || confirmed.equals("n")) {
+                return false;
+            } else {
+                System.out.println("Invalid input! Please type 'yes' or 'no'.");
+            }
+        }
     }
 
-    private static BankAccount chooseAccountType(){
+
+    private static BankAccount chooseAccountType(Scanner scanner) {
 
         System.out.println("Account type");
-        System.out.println("Chose an option");
 
         System.out.println("1 - Conta Poupança");
         System.out.println("2 - Conta Corrente");
         System.out.println("3 - Conta Salário");
 
-        int accountTypeOption = scanner.nextInt();
-        scanner.nextLine();
+        System.out.print("Chose an option: ");
+        int accountTypeOption = Integer.parseInt(scanner.nextLine());
 
         BankAccount account = new BankAccount();
 
@@ -93,24 +128,21 @@ public class Menu {
             System.out.println("=============================");
             System.out.print("Choose an option: ");
 
-            int option = scanner.nextInt();
-            scanner.nextLine();
+            int option = Integer.parseInt(scanner.nextLine());
 
             switch (option) {
                 case 1:
-                    if (login()) {
+                    if (login(scanner)) {
                         bankMenu(scanner);
                     } else {
                         continue;
                     }
                     return;
                 case 2:
-                    accountOpening();
-                    System.out.println("Account Opening with succes!");
+                    accountOpening(scanner);
                     break;
                 case 0:
                     running = false;
-                    JpaUtil.closeEntityManagerFactory();
                     break;
                 default:
                     System.out.println("Invalid option! Please try again.");
@@ -118,10 +150,10 @@ public class Menu {
         }
     }
 
-    private static boolean login() {
-        System.out.print("Digite seu cpf: ");
+    private static boolean login(Scanner scanner) {
+        System.out.print("Enter your cpf: ");
         String inputCpf = scanner.nextLine();
-        System.out.print("Digite sua senha: ");
+        System.out.print("Enter your password: ");
         String inputPassword = scanner.nextLine();
 
         try {
@@ -148,8 +180,7 @@ public class Menu {
             System.out.println("=============================");
             System.out.print("Choose an option: ");
 
-            int option = scanner.nextInt();
-
+            int option = Integer.parseInt(scanner.nextLine());
             switch (option) {
                 case 1:
                     // ToDo...
@@ -180,6 +211,5 @@ public class Menu {
                     System.out.println("Invalid option! Please try again.");
             }
         }
-
     }
 }
