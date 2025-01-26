@@ -6,6 +6,7 @@ import br.com.compass.model.enums.AccountType;
 import br.com.compass.service.AccountService;
 import br.com.compass.service.CustomerService;
 
+import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -28,7 +29,6 @@ public class Menu {
             }
         }
     }
-
 
     private static void accountOpening(Scanner scanner) {
 
@@ -58,14 +58,17 @@ public class Menu {
             String password = scanner.nextLine();
 
             account = chooseAccountType(scanner);
+
             customer = new Customer(fullName, birthDate, cpf, password, phoneNumber);
 
-            if (confirmedOperation(scanner)) {
-                customerService.createCustomer(customer, account);
-                System.out.println("\nAccount created successfully!");
-                confirmed = true;
-            } else {
-                System.out.println("\nLet's edit the details.\n");
+            if (checkIfPasswordIsValid(customer)) {
+                if (confirmedOperation(scanner)) {
+                    customerService.createCustomer(customer, account);
+                    System.out.println("\nAccount created successfully!");
+                    confirmed = true;
+                } else {
+                    System.out.println("\nLet's edit the details.\n");
+                }
             }
         }
         mainMenu(scanner);
@@ -118,6 +121,32 @@ public class Menu {
         return account;
     }
 
+    private static boolean checkIfPasswordIsValid(Customer customer) {
+
+        String customerName = customer.getName();
+        String customerPassword = customer.getPassword();
+        String customerCpf = customer.getCpf();
+        String customerBirthDate = customer.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).replace("/", "");
+        System.out.println(customerBirthDate);
+
+        if (customerPassword.equals(customerCpf)) {
+            System.out.println("The password cannot be the same as your CPF");
+            return false;
+        }
+        if (customerPassword.equals(customerBirthDate) || customerPassword.equals(customer.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))) {
+            System.out.println("The password cannot be the same as your Birth Date");
+            return false;
+        }
+
+        if (customerName.contains(customerPassword) || customerPassword.equalsIgnoreCase(customerName)) {
+            System.out.println("The password cannot be the same as your Name");
+            return false;
+        }
+
+        return true;
+    }
+
+
     private static void mainMenu(Scanner scanner) {
         boolean running = true;
 
@@ -164,6 +193,9 @@ public class Menu {
         try {
             Customer loggedCustomer = customerService.login(inputCpf, inputPassword);
             System.out.println("Welcome, " + loggedCustomer.getName() + "!");
+
+            System.out.println(customerService.loadCustomerAccounts(loggedCustomer));
+
             return true;
         } catch (IllegalArgumentException e) {
             System.out.println("Login failed: " + e.getMessage());
