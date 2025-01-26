@@ -5,6 +5,7 @@ import br.com.compass.model.Customer;
 import br.com.compass.util.JpaUtil;
 import br.com.compass.util.PasswordUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 
 
 public class CustomerDAO {
@@ -29,4 +30,18 @@ public class CustomerDAO {
             JpaUtil.closeEntityManager(em);
         }
     }
+
+    public Customer findByCpf(String cpf) {
+        EntityManager em = JpaUtil.getEntityManager();
+        Customer customer;
+        try {
+            customer = em.createQuery("SELECT c FROM Customer c WHERE c.cpf = :cpf", Customer.class)
+                    .setParameter("cpf", cpf)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+        return customer;
+    }
+
 }
