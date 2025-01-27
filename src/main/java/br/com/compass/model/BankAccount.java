@@ -4,7 +4,6 @@ import br.com.compass.model.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -14,7 +13,6 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class BankAccount {
 
     @Id
@@ -34,10 +32,14 @@ public class BankAccount {
     @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
     private Customer customer;
 
-    public BankAccount(AccountType accountType) {
+    public BankAccount() {
         this.id = null;
         this.balance = BigDecimal.ZERO;
         this.accountNumber = String.valueOf(System.currentTimeMillis());
-        this.accountType = accountType;
+    }
+
+    @Override
+    public String toString() {
+        return accountType + " - " + accountNumber;
     }
 }
