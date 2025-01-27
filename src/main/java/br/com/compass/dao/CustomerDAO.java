@@ -7,6 +7,8 @@ import br.com.compass.util.PasswordUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 
+import java.util.List;
+
 
 public class CustomerDAO {
 
@@ -42,6 +44,23 @@ public class CustomerDAO {
             return null;
         }
         return customer;
+    }
+
+    public List<BankAccount> loadCustomerAccounts(Customer customer) {
+        EntityManager em = JpaUtil.getEntityManager();
+        List<BankAccount> accounts = null;
+
+        try {
+            accounts = em.createQuery("SELECT a from BankAccount a WHERE a.customer = :customer", BankAccount.class)
+                    .setParameter("customer", customer)
+                    .getResultList();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            JpaUtil.closeEntityManager(em);
+        }
+
+        return accounts;
     }
 
 }
