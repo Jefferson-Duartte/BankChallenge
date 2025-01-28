@@ -50,7 +50,7 @@ public class Customer {
     @Column(nullable = false, length = 15)
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<BankAccount> accounts = new ArrayList<>();
 
     public void setAccounts(BankAccount account){
