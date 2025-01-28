@@ -13,7 +13,9 @@ public class CustomerService {
     private CustomerDAO customerDAO = new CustomerDAO();
 
     public void createCustomer(Customer customer, BankAccount account) {
-        customerDAO.createCustomer(customer, account);
+        customer.setAccounts(account);
+        customer.setPassword(PasswordUtil.hashPassword(customer.getPassword()));
+        customerDAO.createCustomer(customer);
     }
 
     public Customer login(String cpf, String password) {
