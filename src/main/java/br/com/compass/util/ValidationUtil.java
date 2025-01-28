@@ -3,6 +3,7 @@ package br.com.compass.util;
 import br.com.compass.model.Customer;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 
 public class ValidationUtil {
 
@@ -29,6 +30,21 @@ public class ValidationUtil {
         }
 
         return true;
+    }
+
+    public static boolean confirmedOperation(Scanner scanner) {
+        while (true) {
+            System.out.print("Are the details correct? (yes/no): ");
+            String confirmed = scanner.nextLine().trim().toLowerCase();
+
+            if (confirmed.equals("yes") || confirmed.equals("y")) {
+                return true;
+            } else if (confirmed.equals("no") || confirmed.equals("n")) {
+                return false;
+            } else {
+                System.out.println("Invalid input! Please type 'yes' or 'no'.");
+            }
+        }
     }
 
 }

@@ -45,7 +45,7 @@ public class AccountOpeningMenu {
             customer = new Customer(fullName, birthDate, cpf, password, phoneNumber);
 
             if (ValidationUtil.isPasswordValid(customer)) {
-                if (confirmedOperation(scanner)) {
+                if (ValidationUtil.confirmedOperation(scanner)) {
                     customerService.createCustomer(customer, account);
                     System.out.println("\nAccount created successfully!");
                     confirmed = true;
@@ -56,20 +56,6 @@ public class AccountOpeningMenu {
         }
     }
 
-    private static boolean confirmedOperation(Scanner scanner) {
-        while (true) {
-            System.out.print("Are the details correct? (yes/no): ");
-            String confirmed = scanner.nextLine().trim().toLowerCase();
-
-            if (confirmed.equals("yes") || confirmed.equals("y")) {
-                return true;
-            } else if (confirmed.equals("no") || confirmed.equals("n")) {
-                return false;
-            } else {
-                System.out.println("Invalid input! Please type 'yes' or 'no'.");
-            }
-        }
-    }
 
     private static BankAccount chooseAccountType(Scanner scanner) {
 
