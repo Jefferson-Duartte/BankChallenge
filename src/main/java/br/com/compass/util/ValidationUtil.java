@@ -71,4 +71,13 @@ public class ValidationUtil {
         }
 
     }
+
+    public static boolean isPhoneNumberValid(String phoneNumber) {
+        if (phoneNumber.matches("\\d{1,13}")) {
+            return true;
+        } else {
+            System.out.println("Phone number is invalid!");
+            return false;
+        }
+    }
 }
