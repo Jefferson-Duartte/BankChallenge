@@ -35,11 +35,8 @@ public class MainMenu {
 
                 switch (option) {
                     case 1:
-                        if (Login.login(scanner)) {
-                            BankMenu.show(scanner);
-                        } else {
-                            continue;
-                        }
+                        Login.login(scanner);
+                        break;
                     case 2:
                         AccountOpeningMenu.show(scanner);
                         break;
