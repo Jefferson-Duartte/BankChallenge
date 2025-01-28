@@ -53,7 +53,7 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<BankAccount> accounts = new ArrayList<>();
 
-    public void setAccounts(BankAccount account){
+    public void setAccounts(BankAccount account) {
         account.setCustomer(this);
         this.accounts.add(account);
     }

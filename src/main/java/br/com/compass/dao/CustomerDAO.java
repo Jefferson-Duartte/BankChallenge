@@ -3,7 +3,6 @@ package br.com.compass.dao;
 import br.com.compass.model.BankAccount;
 import br.com.compass.model.Customer;
 import br.com.compass.util.JpaUtil;
-import br.com.compass.util.PasswordUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 

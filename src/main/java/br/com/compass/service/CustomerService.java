@@ -35,7 +35,7 @@ public class CustomerService {
         return customer;
     }
 
-    public List<BankAccount> loadCustomerAccounts(Customer customer){
+    public List<BankAccount> loadCustomerAccounts(Customer customer) {
         return customerDAO.loadCustomerAccounts(customer);
     }
 }

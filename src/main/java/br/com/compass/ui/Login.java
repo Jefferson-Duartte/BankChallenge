@@ -29,7 +29,7 @@ public class Login {
 
             if (selectedAccount != null) {
                 BankMenu.show(scanner, selectedAccount);
-            }else {
+            } else {
                 MainMenu.run();
             }
 
