@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_statement")
@@ -24,11 +25,13 @@ public class BankStatement {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private BankAccount account;
 
-    @OneToMany(mappedBy = "statement", cascade = CascadeType.ALL)
-    private List<Transaction> transactions;
+    @OneToMany(mappedBy = "statement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Transaction> transactions = new HashSet<>();
 
     public void addTransaction(Transaction transaction) {
-        transactions.add(transaction);
+        if (transactions != null) {
+            transactions.add(transaction);
+        }
     }
 
 }
