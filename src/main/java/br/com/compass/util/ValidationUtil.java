@@ -46,4 +46,16 @@ public class ValidationUtil {
         }
     }
 
+    public static boolean isCpfValid(Customer customer) {
+
+        String customerCpf = customer.getCpf();
+
+        if (customerCpf.length() != 11 || !customerCpf.matches("\\d{11}")) {
+            System.out.println("The CPF is invalid!");
+            return false;
+        }
+
+        return true;’
+    }
+
 }
