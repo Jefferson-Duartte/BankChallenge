@@ -36,4 +36,17 @@ public class AccountDAO {
         }
 
     }
+
+    public BankAccount findAccountByNumber(String accountNumber) {
+        EntityManager em = JpaUtil.getEntityManager();
+        BankAccount account;
+        try {
+            account = em.createQuery("SELECT a FROM BankAccount a WHERE a.accountNumber = :accountNumber", BankAccount.class)
+                    .setParameter("accountNumber", accountNumber).getSingleResult();
+
+        } finally {
+            em.close();
+        }
+        return account;
+    }
 }
