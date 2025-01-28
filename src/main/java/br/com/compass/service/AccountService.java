@@ -12,7 +12,6 @@ import br.com.compass.model.enums.AccountType;
 import br.com.compass.model.enums.TransactionType;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class AccountService {
@@ -100,14 +99,12 @@ public class AccountService {
             statement = new BankStatement();
             statement.setAccount(account);
             account.setStatement(statement);
-            bankStatementDAO.save(statement);
         }
 
+        statement.addTransaction(transaction);
         transaction.setStatement(statement);
         transaction.setDate(new Date());
         transactionDAO.save(transaction);
 
     }
-
-
 }
