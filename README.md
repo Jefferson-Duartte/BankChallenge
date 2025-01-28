@@ -8,4 +8,5 @@ O objetivo é desenvolver um sistema de banco funcional que permita aos usuário
 **Back-end:** Java
 
 
-## Atualizacões em breve...
+## Diagrama Entidade Relacional
+![Diagrama Entidade Relacional](https://github.com/Jefferson-Duartte/BankChallenge/blob/main/src/main/resources/images/der%20bankChallenge.png?raw=true)
