@@ -99,12 +99,47 @@ public class AccountService {
             statement = new BankStatement();
             statement.setAccount(account);
             account.setStatement(statement);
+            bankStatementDAO.save(statement);
         }
 
         statement.addTransaction(transaction);
         transaction.setStatement(statement);
         transaction.setDate(new Date());
+
         transactionDAO.save(transaction);
 
+    }
+
+    public void transfer(BankAccount senderAccount, BankAccount receiverAccount, BigDecimal amount) {
+
+        if (senderAccount == null || receiverAccount == null) {
+            System.out.println("One of the accounts doesn't exist.");
+            return;
+        }
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            System.out.println("Amount must be greater than zero.");
+            return;
+        }
+
+        if (senderAccount.getBalance().compareTo(amount) < 0) {
+            System.out.println("Insufficient balance for this transfer.");
+            return;
+        }
+
+        senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
+        receiverAccount.setBalance(receiverAccount.getBalance().add(amount));
+
+        createTransaction(senderAccount, amount, TransactionType.TRANSFER_SENT);
+        createTransaction(receiverAccount, amount, TransactionType.TRANSFER_RECEIVED);
+
+        accountDAO.update(senderAccount);
+        accountDAO.update(receiverAccount);
+
+        System.out.println("Transfer successful.");
+    }
+
+    public BankAccount findAccountByNumber(String recipientAccountNumber) {
+        return accountDAO.findAccountByNumber(recipientAccountNumber);
     }
 }
