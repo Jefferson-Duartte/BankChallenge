@@ -1,17 +1,26 @@
 package br.com.compass.service;
 
 import br.com.compass.dao.AccountDAO;
+import br.com.compass.dao.BankStatementDAO;
 import br.com.compass.dao.CustomerDAO;
+import br.com.compass.dao.TransactionDAO;
 import br.com.compass.model.BankAccount;
+import br.com.compass.model.BankStatement;
 import br.com.compass.model.Customer;
+import br.com.compass.model.Transaction;
 import br.com.compass.model.enums.AccountType;
+import br.com.compass.model.enums.TransactionType;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 public class AccountService {
 
     private AccountDAO accountDAO = new AccountDAO();
     private CustomerDAO customerDAO = new CustomerDAO();
+    private TransactionDAO transactionDAO = new TransactionDAO();
+    private BankStatementDAO bankStatementDAO = new BankStatementDAO();
 
     public BankAccount createAccount(Customer customer, AccountType accountType) {
 
@@ -42,6 +51,8 @@ public class AccountService {
         }
 
         existingAccount.setBalance(account.getBalance().add(amount));
+        createTransaction(account, amount, TransactionType.DEPOSIT);
+
         accountDAO.update(existingAccount);
         System.out.println("Successful deposit");
     }
@@ -66,6 +77,9 @@ public class AccountService {
         }
 
         existingAccount.setBalance(existingAccount.getBalance().subtract(amount));
+
+        createTransaction(account, amount, TransactionType.WITHDRAW);
+
         accountDAO.update(existingAccount);
         System.out.println("Successful withdraw");
 
@@ -74,6 +88,25 @@ public class AccountService {
     public BigDecimal checkBalance(BankAccount account) {
         BankAccount existingAccount = accountDAO.findById(account.getId());
         return existingAccount.getBalance();
+    }
+
+    public void createTransaction(BankAccount account, BigDecimal amount, TransactionType transactionType) {
+        Transaction transaction = new Transaction();
+        transaction.setAmount(amount);
+        transaction.setTransactionType(transactionType);
+
+        BankStatement statement = account.getStatement();
+        if (statement == null) {
+            statement = new BankStatement();
+            statement.setAccount(account);
+            account.setStatement(statement);
+            bankStatementDAO.save(statement);
+        }
+
+        transaction.setStatement(statement);
+        transaction.setDate(new Date());
+        transactionDAO.save(transaction);
+
     }
 
 
