@@ -2,7 +2,9 @@ package br.com.compass.util;
 
 import br.com.compass.model.Customer;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class ValidationUtil {
@@ -55,7 +57,18 @@ public class ValidationUtil {
             return false;
         }
 
-        return true;’
+        return true;
     }
 
+    public static boolean isBirthDateValid(String birthDate) {
+
+        try {
+            LocalDate date = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            return true;
+        } catch (DateTimeParseException e) {
+            System.out.println("Birth date is invalid!");
+            return false;
+        }
+
+    }
 }
