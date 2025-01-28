@@ -35,12 +35,10 @@ public class BankMenu {
                     deposit(account, scanner);
                     break;
                 case 2:
-                    // ToDo...
                     withdraw(account, scanner);
                     break;
                 case 3:
-                    // ToDo...
-                    System.out.println("Check Balance.");
+                    checkBalance(account);
                     break;
                 case 4:
                     // ToDo...
@@ -91,6 +89,10 @@ public class BankMenu {
             System.out.println("Operation cancelled");
             BankMenu.show(scanner, account);
         }
+    }
+
+    private static void checkBalance(BankAccount account){
+        System.out.println("Your balance: R$: " + accountService.checkBalance(account));
     }
 
 
