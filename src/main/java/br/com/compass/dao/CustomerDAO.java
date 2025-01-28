@@ -12,13 +12,10 @@ import java.util.List;
 
 public class CustomerDAO {
 
-    public void createCustomer(Customer customer, BankAccount account) {
+    public void createCustomer(Customer customer) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-
-            customer.setAccounts(account);
-            customer.setPassword(PasswordUtil.hashPassword(customer.getPassword()));
             em.persist(customer);
 
             em.getTransaction().commit();
@@ -61,6 +58,24 @@ public class CustomerDAO {
         }
 
         return accounts;
+    }
+
+    public void update(Customer customer) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(customer);
+            em.getTransaction().commit();
+
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
     }
 
 }
