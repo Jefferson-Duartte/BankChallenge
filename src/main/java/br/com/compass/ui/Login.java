@@ -4,6 +4,7 @@ import br.com.compass.model.BankAccount;
 import br.com.compass.model.Customer;
 import br.com.compass.service.CustomerService;
 
+import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -13,24 +14,27 @@ public class Login {
     private static CustomerService customerService = new CustomerService();
 
     public static void login(Scanner scanner) {
-        System.out.print("Enter your cpf: ");
-        String inputCpf = scanner.nextLine();
-        System.out.print("Enter your password: ");
-        String inputPassword = scanner.nextLine();
 
         try {
+            System.out.print("Enter your cpf: ");
+            String inputCpf = scanner.nextLine();
+            System.out.print("Enter your password: ");
+            String inputPassword = scanner.nextLine();
+
             Customer loggedCustomer = customerService.login(inputCpf, inputPassword);
             System.out.println("Welcome, " + loggedCustomer.getName() + "!");
 
             BankAccount selectedAccount = selectAccountForManagement(loggedCustomer, scanner);
 
+
             if (selectedAccount != null) {
                 BankMenu.show(scanner, selectedAccount);
             }
 
-        } catch (IllegalArgumentException e) {
-            System.out.println("Login failed: " + e.getMessage());
+        } catch (NullPointerException e) {
+            MainMenu.run();
         }
+
     }
 
     private static BankAccount selectAccountForManagement(Customer customer, Scanner scanner) {
