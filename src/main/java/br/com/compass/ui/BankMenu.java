@@ -1,16 +1,19 @@
 package br.com.compass.ui;
 
 import br.com.compass.model.BankAccount;
+import br.com.compass.model.Customer;
+import br.com.compass.model.enums.AccountType;
 import br.com.compass.service.AccountService;
+import br.com.compass.service.CustomerService;
 import br.com.compass.util.ValidationUtil;
 
 import java.math.BigDecimal;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class BankMenu {
 
     private static AccountService accountService = new AccountService();
+    private static CustomerService customerService = new CustomerService();
 
 
     public static void show(Scanner scanner, BankAccount account) {
@@ -49,8 +52,7 @@ public class BankMenu {
                     System.out.println("Bank Statement.");
                     break;
                 case 6:
-                    // ToDo...
-                    System.out.println("Open new account.");
+                    openNewAccount(account, scanner);
                     break;
                 case 0:
                     // ToDo...
@@ -80,7 +82,7 @@ public class BankMenu {
     private static void withdraw(BankAccount account, Scanner scanner) {
         BigDecimal amount = validateAmount(scanner);
 
-        System.out.println("Do you confirm the withdraw of " + amount + " in your account " + account);
+        System.out.println("Do you confirm the withdraw of R$ " + amount + " in your account " + account);
 
         if (ValidationUtil.confirmedOperation(scanner)) {
             accountService.withdraw(account, amount);
@@ -91,7 +93,7 @@ public class BankMenu {
         }
     }
 
-    private static void checkBalance(BankAccount account){
+    private static void checkBalance(BankAccount account) {
         System.out.println("Your balance: R$: " + accountService.checkBalance(account));
     }
 
@@ -118,6 +120,61 @@ public class BankMenu {
 
         return amount;
 
+    }
+
+    private static void openNewAccount(BankAccount account, Scanner scanner) {
+
+        Customer customer = account.getCustomer();
+
+        var existingAccounts = customerService.loadCustomerAccounts(customer);
+
+        List<AccountType> availableAccountTypes = new ArrayList<>();
+
+        for (AccountType type : AccountType.values()) {
+            boolean exists = false;
+            for (BankAccount acct : existingAccounts) {
+                if (acct.getAccountType() == type) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                availableAccountTypes.add(type);
+            }
+        }
+
+        if (availableAccountTypes.isEmpty()) {
+            System.out.println("You already have all account types. No new accounts can be created.");
+            return;
+        }
+
+        System.out.println("Available account types:");
+        for (int i = 0; i < availableAccountTypes.size(); i++) {
+            System.out.println(i + 1 + " - " + availableAccountTypes.get(i));
+        }
+
+        System.out.print("Choose an option: ");
+        int option;
+        try {
+            option = Integer.parseInt(scanner.nextLine()) - 1;
+            if (option < 0 || option >= availableAccountTypes.size()) {
+                System.out.println("Invalid option. Operation cancelled.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Operation cancelled.");
+            return;
+        }
+
+        AccountType selectedType = availableAccountTypes.get(option);
+        System.out.println("Do you confirm the creation of a " + selectedType + " account?");
+
+        if (ValidationUtil.confirmedOperation(scanner)) {
+            BankAccount newAccount = accountService.createAccount(customer, selectedType);
+            System.out.println("Account successfully created: " + newAccount);
+        } else {
+            System.out.println("Operation cancelled.");
+        }
     }
 
 }
