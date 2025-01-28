@@ -40,20 +40,25 @@ public class AccountOpeningMenu {
             System.out.print("Password: ");
             String password = scanner.nextLine();
 
-            account = chooseAccountType(scanner);
+            if (ValidationUtil.isPasswordValid(fullName, password, cpf, birthDate) &&
+                    ValidationUtil.isCpfValid(cpf) &&
+                    ValidationUtil.isBirthDateValid(birthDate) &&
+                    ValidationUtil.isPhoneNumberValid(phoneNumber)) {
+                customer = new Customer(fullName, birthDate, cpf, password, phoneNumber);
+                account = chooseAccountType(scanner);
 
-            customer = new Customer(fullName, birthDate, cpf, password, phoneNumber);
-
-            if (ValidationUtil.isPasswordValid(customer)) {
                 if (ValidationUtil.confirmedOperation(scanner)) {
                     customerService.createCustomer(customer, account);
                     System.out.println("\nAccount created successfully!");
-                    BankMenu.show(scanner,account);
+                    BankMenu.show(scanner, account);
                     confirmed = true;
                 } else {
                     System.out.println("\nLet's edit the details.\n");
                 }
+            } else {
+                System.out.println("\nLet's edit the details.\n");
             }
+
         }
     }
 
