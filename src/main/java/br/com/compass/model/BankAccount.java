@@ -27,6 +27,9 @@ public class BankAccount {
     @Column(unique = true)
     private String accountNumber;
 
+    @OneToOne(mappedBy = "account")
+    private BankStatement statement;
+
 
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
