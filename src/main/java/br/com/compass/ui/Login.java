@@ -39,6 +39,7 @@ public class Login {
 
     private static BankAccount selectAccountForManagement(Customer customer, Scanner scanner) {
         List<BankAccount> accounts = customerService.loadCustomerAccounts(customer);
+        accounts = accounts.stream().sorted(Comparator.comparing(BankAccount::getAccountNumber)).toList();
 
         if (!accounts.isEmpty()) {
 
