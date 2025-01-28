@@ -48,6 +48,7 @@ public class AccountOpeningMenu {
                 if (ValidationUtil.confirmedOperation(scanner)) {
                     customerService.createCustomer(customer, account);
                     System.out.println("\nAccount created successfully!");
+                    BankMenu.show(scanner,account);
                     confirmed = true;
                 } else {
                     System.out.println("\nLet's edit the details.\n");
