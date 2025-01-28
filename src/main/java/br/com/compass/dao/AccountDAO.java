@@ -4,27 +4,27 @@ import br.com.compass.model.BankAccount;
 import br.com.compass.util.JpaUtil;
 import jakarta.persistence.EntityManager;
 
-import java.math.BigDecimal;
-
 public class AccountDAO {
 
     public AccountDAO() {
     }
 
-    public BankAccount deposit(BankAccount account, BigDecimal amount) {
+    public BankAccount findById(Long id) {
         EntityManager em = JpaUtil.getEntityManager();
 
         try {
+            return em.find(BankAccount.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    public void update(BankAccount account) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
             em.getTransaction().begin();
-            BankAccount existingAccount = em.find(BankAccount.class, account.getId());
-
-            if (existingAccount != null) {
-                existingAccount.setBalance(existingAccount.getBalance().add(amount));
-                em.merge(existingAccount);
-            }
-
+            em.merge(account);
             em.getTransaction().commit();
-            return existingAccount;
 
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
@@ -35,7 +35,5 @@ public class AccountDAO {
             em.close();
         }
 
-        return null;
     }
-
 }
