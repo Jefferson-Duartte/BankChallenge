@@ -7,6 +7,7 @@ import br.com.compass.model.enums.AccountType;
 import br.com.compass.service.AccountService;
 import br.com.compass.service.CustomerService;
 import br.com.compass.util.ValidationUtil;
+import jakarta.persistence.NoResultException;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -124,29 +125,34 @@ public class BankMenu {
 
     private static void transfer(Scanner scanner, BankAccount senderAccount) {
         System.out.print("Enter the recipient account number: ");
-        String recipientAccountNumber = scanner.nextLine();
 
-        BankAccount recipient = accountService.findAccountByNumber(recipientAccountNumber);
-        BankAccount sender = accountService.findAccountByNumber(senderAccount.getAccountNumber());
+        try {
+            String recipientAccountNumber = scanner.nextLine();
 
-        if (recipient == null) {
+            BankAccount recipient = accountService.findAccountByNumber(recipientAccountNumber);
+            BankAccount sender = accountService.findAccountByNumber(senderAccount.getAccountNumber());
+            if (recipient == null) {
+                System.out.println("Recipient account not found.");
+                return;
+            }
+
+            BigDecimal amount = validateAmount(scanner);
+
+            System.out.println("Do you confirm the transfer of R$ " + amount + " to account " + recipient);
+
+            if (ValidationUtil.confirmedOperation(scanner)) {
+                accountService.transfer(sender, recipient, amount);
+            } else {
+                System.out.println("Operation cancelled");
+                BankMenu.show(scanner, sender);
+            }
+        } catch (NoResultException e) {
             System.out.println("Recipient account not found.");
-            return;
         }
 
-        BigDecimal amount = validateAmount(scanner);
-
-        System.out.println("Do you confirm the transfer of R$ " + amount + " to account " + recipient);
-
-        if (ValidationUtil.confirmedOperation(scanner)) {
-            accountService.transfer(sender, recipient, amount);
-        } else {
-            System.out.println("Operation cancelled");
-            BankMenu.show(scanner, sender);
-        }
     }
 
-    private static void showBankStatement (BankAccount account) {
+    private static void showBankStatement(BankAccount account) {
         if (account.getStatement() == null) {
             System.out.println("No transactions found for this account.");
             return;
