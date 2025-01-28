@@ -24,7 +24,7 @@ public class BankStatement {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private BankAccount account;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "statement", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
 
     public void addTransaction(Transaction transaction) {
