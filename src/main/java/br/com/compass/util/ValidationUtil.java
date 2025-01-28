@@ -13,7 +13,6 @@ public class ValidationUtil {
         String customerPassword = customer.getPassword();
         String customerCpf = customer.getCpf();
         String customerBirthDate = customer.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).replace("/", "");
-        System.out.println(customerBirthDate);
 
         if (customerPassword.equals(customerCpf)) {
             System.out.println("The password cannot be the same as your CPF");
