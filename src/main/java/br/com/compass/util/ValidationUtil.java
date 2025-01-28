@@ -9,18 +9,13 @@ import java.util.Scanner;
 
 public class ValidationUtil {
 
-    public static boolean isPasswordValid(Customer customer) {
-
-        String customerName = customer.getName();
-        String customerPassword = customer.getPassword();
-        String customerCpf = customer.getCpf();
-        String customerBirthDate = customer.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).replace("/", "");
+    public static boolean isPasswordValid(String customerName, String customerPassword, String customerCpf, String customerBirthDate) {
 
         if (customerPassword.equals(customerCpf)) {
             System.out.println("The password cannot be the same as your CPF");
             return false;
         }
-        if (customerPassword.equals(customerBirthDate) || customerPassword.equals(customer.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))) {
+        if (customerPassword.equals(customerBirthDate)) {
             System.out.println("The password cannot be the same as your Birth Date");
             return false;
         }
@@ -48,9 +43,7 @@ public class ValidationUtil {
         }
     }
 
-    public static boolean isCpfValid(Customer customer) {
-
-        String customerCpf = customer.getCpf();
+    public static boolean isCpfValid(String customerCpf) {
 
         if (customerCpf.length() != 11 || !customerCpf.matches("\\d{11}")) {
             System.out.println("The CPF is invalid!");
@@ -63,7 +56,7 @@ public class ValidationUtil {
     public static boolean isBirthDateValid(String birthDate) {
 
         try {
-            LocalDate date = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             return true;
         } catch (DateTimeParseException e) {
             System.out.println("Birth date is invalid!");
