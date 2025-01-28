@@ -21,11 +21,13 @@ public class CustomerService {
         Customer customer = customerDAO.findByCpf(cpf);
 
         if (customer == null) {
-            throw new IllegalArgumentException("Customer with CPF " + cpf + " does not exist!");
+            System.out.println("Customer with CPF " + cpf + " does not exist!");
+            return null;
         }
 
         if (!PasswordUtil.checkPassword(password, customer.getPassword())) {
-            throw new IllegalArgumentException("Invalid Password!");
+            System.out.println("Invalid Password!");
+            return null;
         }
 
         return customer;
