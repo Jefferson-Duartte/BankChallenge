@@ -9,10 +9,8 @@ import br.com.compass.service.CustomerService;
 import br.com.compass.util.ValidationUtil;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BankMenu {
 
@@ -48,8 +46,7 @@ public class BankMenu {
                     checkBalance(account);
                     break;
                 case 4:
-                    // ToDo...
-                    System.out.println("Transfer.");
+                    transfer(scanner, account);
                     break;
                 case 5:
                     showBankStatement(account);
@@ -125,6 +122,30 @@ public class BankMenu {
 
     }
 
+    private static void transfer(Scanner scanner, BankAccount senderAccount) {
+        System.out.print("Enter the recipient account number: ");
+        String recipientAccountNumber = scanner.nextLine();
+
+        BankAccount recipient = accountService.findAccountByNumber(recipientAccountNumber);
+        BankAccount sender = accountService.findAccountByNumber(senderAccount.getAccountNumber());
+
+        if (recipient == null) {
+            System.out.println("Recipient account not found.");
+            return;
+        }
+
+        BigDecimal amount = validateAmount(scanner);
+
+        System.out.println("Do you confirm the transfer of R$ " + amount + " to account " + recipient);
+
+        if (ValidationUtil.confirmedOperation(scanner)) {
+            accountService.transfer(sender, recipient, amount);
+        } else {
+            System.out.println("Operation cancelled");
+            BankMenu.show(scanner, sender);
+        }
+    }
+
     private static void showBankStatement (BankAccount account) {
         if (account.getStatement() == null) {
             System.out.println("No transactions found for this account.");
@@ -134,7 +155,9 @@ public class BankMenu {
         System.out.println("========= Bank Statement =========");
         System.out.println("Account: " + account);
 
-        List<Transaction> transactions = account.getStatement().getTransactions();
+        Set<Transaction> transactions = accountService.findAccountByNumber(account.getAccountNumber()).getStatement().getTransactions();
+
+        transactions = transactions.stream().sorted(Comparator.comparing(Transaction::getDate).reversed()).collect(Collectors.toCollection(LinkedHashSet::new));
         if (transactions.isEmpty()) {
             System.out.println("No transactions available.");
         } else {
