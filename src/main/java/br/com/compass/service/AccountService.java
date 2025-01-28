@@ -53,4 +53,9 @@ public class AccountService {
 
     }
 
+    public BigDecimal checkBalance(BankAccount account){
+        BankAccount existingAccount = accountDAO.findById(account.getId());
+        return existingAccount.getBalance();
+    }
+
 }
