@@ -2,13 +2,17 @@ package br.com.compass.ui;
 
 import br.com.compass.model.BankAccount;
 import br.com.compass.model.Customer;
+import br.com.compass.model.Transaction;
 import br.com.compass.model.enums.AccountType;
 import br.com.compass.service.AccountService;
 import br.com.compass.service.CustomerService;
 import br.com.compass.util.ValidationUtil;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
 
 public class BankMenu {
 
@@ -48,8 +52,7 @@ public class BankMenu {
                     System.out.println("Transfer.");
                     break;
                 case 5:
-                    // ToDo...
-                    System.out.println("Bank Statement.");
+                    showBankStatement(account);
                     break;
                 case 6:
                     openNewAccount(account, scanner);
@@ -120,6 +123,29 @@ public class BankMenu {
 
         return amount;
 
+    }
+
+    private static void showBankStatement (BankAccount account) {
+        if (account.getStatement() == null) {
+            System.out.println("No transactions found for this account.");
+            return;
+        }
+
+        System.out.println("========= Bank Statement =========");
+        System.out.println("Account: " + account);
+
+        List<Transaction> transactions = account.getStatement().getTransactions();
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions available.");
+        } else {
+            for (Transaction transaction : transactions) {
+                System.out.println("Date: " + transaction.getDate() +
+                        " | Type: " + transaction.getTransactionType() +
+                        " | Amount: R$ " + transaction.getAmount().toString().replace(".", ","));
+            }
+        }
+
+        System.out.println("=============================");
     }
 
     private static void openNewAccount(BankAccount account, Scanner scanner) {
